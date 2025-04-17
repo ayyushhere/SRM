@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Order - SRM System</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+
+  <!-- Navbar -->
+  <nav class="bg-gradient-to-r from-blue-500 to-blue-700 dark:from-gray-800 dark:to-gray-900 shadow-lg fixed w-full z-50">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-white flex items-center">
+        <img src="assets/logo.svg" alt="SRM Logo" class="rounded-md w-8 h-8 mr-2"> SRM System
+      </h1>
+      <div class="hidden md:flex space-x-8">
+        <a href="dashboard.html" class="text-white hover:text-gray-200 transition">Dashboard</a>
+        <a href="orders.html" class="text-white hover:text-gray-200 transition">Orders</a>
+        <a href="../backend/logout.php" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">Logout</a>
+      </div>
+      <div class="md:hidden">
+        <button class="text-white focus:outline-none" aria-label="Toggle navigation menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-10 pt-28">
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md max-w-md mx-auto">
+      <h2 class="text-3xl font-semibold mb-6 text-center">Add New Order</h2>
+      <form id="orderForm" class="space-y-4">
+        <div>
+          <label for="supplier_id" class="block mb-1">Supplier ID</label>
+          <input type="number" id="supplier_id" name="supplier_id" required class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+        </div>
+        <div>
+          <label for="amount" class="block mb-1">Amount</label>
+          <input type="number" id="amount" name="amount" required class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+        </div>
+        <div>
+          <label for="order_date" class="block mb-1">Order Date</label>
+          <input type="date" id="order_date" name="order_date" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+        </div>
+        <div>
+          <label for="status" class="block mb-1">Status</label>
+          <select id="status" name="status" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg w-full">Submit Order</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Script to submit form -->
+  <script>
+    document.getElementById('orderForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const supplierId = document.getElementById('supplier_id').value;
+      const amount = document.getElementById('amount').value;
+      const orderDate = document.getElementById('order_date').value;
+      const status = document.getElementById('status').value;
+
+      fetch('../backend/add_order.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `supplier_id=${supplierId}&amount=${amount}&order_date=${orderDate}&status=${status}`
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('✅ Order added successfully!');
+          window.location.href = 'orders.html';
+        } else {
+          alert('❌ Failed to add order: ' + (data.error || 'Unknown error'));
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('❌ Something went wrong while adding the order.');
+      });
+    });
+  </script>
+</body>
+</html>

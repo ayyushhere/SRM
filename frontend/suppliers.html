@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suppliers - SRM System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+
+    <!-- Navbar -->
+    <nav class="bg-gradient-to-r from-blue-500 to-blue-700 dark:from-gray-800 dark:to-gray-900 shadow-lg fixed w-full z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-white flex items-center">
+                <img src="assets/logo.svg" alt="SRM Logo" class="rounded-md w-8 h-8 mr-2"> SRM System
+            </h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="dashboard.html" class="text-white hover:text-gray-200 transition">Dashboard</a>
+                <!-- <a href="#features" class="text-white hover:text-gray-200 transition">Features</a> -->
+                <!-- <a href="#contact" class="text-white hover:text-gray-200 transition">Contact</a> -->
+                <!-- <a href="about.html" class="text-white hover:text-gray-200 transition">About Developer</a> -->
+                <a href="../backend/logout.php" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">Logout</a>
+            </div>
+            <div class="md:hidden">
+                <button class="text-white focus:outline-none" aria-label="Toggle navigation menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Suppliers Content -->
+    <main class="container mx-auto px-4 py-10 pt-28">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-3xl font-bold">Suppliers</h2>
+            <a href="add-supplier.html" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Add
+                Supplier</a>
+        </div>
+
+        <div class="overflow-x-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+            <table class="min-w-full table-auto">
+                <thead>
+                    <tr class="bg-gray-100 dark:bg-gray-700">
+                        <th class="px-4 py-2">Supplier ID</th>
+                        <th class="px-4 py-2">Name</th>
+                        <th class="px-4 py-2">Email</th>
+                        <th class="px-4 py-2">Contact</th>
+                        <th class="px-4 py-2">Address</th>
+                        <th class="px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="supplier-body">
+                    <!-- Suppliers will be loaded here dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Fetch and Display Script -->
+    <script>
+        fetch('../backend/get_suppliers.php')
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById('supplier-body');
+                if (Array.isArray(data)) {
+                    tbody.innerHTML = ""; // Clear existing rows
+                    data.forEach(supplier => {
+                        const row = document.createElement('tr');
+                        row.classList.add('border-b', 'dark:border-gray-700');
+                        row.innerHTML = `
+          <td class="px-4 py-2">SUP${supplier.id}</td>
+          <td class="px-4 py-2">${supplier.name}</td>
+          <td class="px-4 py-2">${supplier.email}</td>
+          <td class="px-4 py-2">${supplier.phone}</td>
+          <td class="px-4 py-2">${supplier.location}</td>
+          <td class="px-4 py-2 space-x-2">
+            <button class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded">Edit</button>
+            <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Delete</button>
+          </td>
+        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 py-4">Failed to load suppliers</td></tr>`;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('supplier-body').innerHTML = `<tr><td colspan="6" class="text-center text-red-500 py-4">Error loading suppliers</td></tr>`;
+            });
+    </script>
+</body>
+
+</html>

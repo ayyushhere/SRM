@@ -1,0 +1,5 @@
+<svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="20" fill="#3B82F6"/>
+  <path d="M30 50C30 41 37 34 45 34H66C70 34 74 38 74 42V58C74 62 70 66 66 66H55M30 50H55M30 50V66C30 70 34 74 38 74H55" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="50%" y="90%" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">SRM</text>
+</svg>

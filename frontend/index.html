@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SRM System - Supplier Relationship Management</title>
+  
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Font family applied globally -->
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-white font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-gradient-to-r from-blue-500 to-blue-700 dark:from-gray-800 dark:to-gray-900 shadow-lg fixed w-full z-50">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-white flex items-center">
+        <img src="assets/logo.svg" alt="SRM Logo" class="rounded-md w-8 h-8 mr-2"> SRM System
+      </h1>
+      <div class="hidden md:flex space-x-8">
+        <a href="index.html" class="text-white hover:text-gray-200 transition">Home</a>
+        <a href="#features" class="text-white hover:text-gray-200 transition">Features</a>
+        <a href="#contact" class="text-white hover:text-gray-200 transition">Contact</a>
+        <a href="about.html" class="text-white hover:text-gray-200 transition">About Developers</a>
+        <a href="login.html" class="px-4 py-2 bg-white text-blue-600 rounded hover:bg-gray-100 transition">Login</a>
+      </div>
+      <div class="md:hidden">
+        <button class="text-white focus:outline-none" aria-label="Toggle navigation menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-28 pb-20">
+    <div class="container mx-auto px-6 flex flex-col-reverse md:flex-row items-center">
+      
+      <!-- Text -->
+      <div class="md:w-1/2 text-center md:text-left space-y-6 hero-text">
+        <h2 class="text-4xl md:text-5xl font-extrabold leading-tight">
+          Manage Your <span class="text-blue-600">Suppliers</span> with Ease
+        </h2>
+        <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+          Efficient, transparent and organized supplier management for modern businesses.
+        </p>
+        <a href="register.html" class="inline-block px-8 py-3 bg-blue-600 text-white text-lg font-medium rounded-full hover:bg-blue-700 transition">
+          Get Started
+        </a>
+      </div>
+      
+      <!-- Hero Image -->
+      <div class="md:w-1/2 mb-10 md:mb-0 flex justify-center hero-image">
+        <img src="assets/hero-image.png" alt="Supplier Management Illustration" class="rounded-lg w-full max-w-lg" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-20 relative">
+    <!-- Removed video background -->
+    <div class="features-overlay"></div>
+    <div class="container mx-auto px-6 text-center relative z-10">
+      <h3 class="text-3xl font-bold mb-12">Key Features</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow hover:shadow-lg transition feature-card">
+          <img src="assets/supplier.svg" alt="Supplier" class="w-20 h-20 mx-auto mb-4">
+          <h4 class="text-xl font-semibold mb-2">Supplier Management</h4>
+          <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Register, approve and track supplier performance efficiently.</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow hover:shadow-lg transition feature-card">
+          <img src="assets/orders.svg" alt="Orders" class="w-20 h-20 mx-auto mb-4">
+          <h4 class="text-xl font-semibold mb-2">Order Tracking</h4>
+          <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Create, update and monitor purchase orders in real time.</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow hover:shadow-lg transition feature-card">
+          <img src="assets/documents.svg" alt="Documents" class="w-20 h-20 mx-auto mb-4">
+          <h4 class="text-xl font-semibold mb-2">Document Handling</h4>
+          <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Securely upload and manage important supplier documents.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="py-20 bg-gray-100 dark:bg-gray-900">
+    <div class="container mx-auto px-6 text-center">
+      <h3 class="text-3xl font-bold mb-12">What Our Users Say</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow hover:shadow-lg transition">
+          <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">"The SRM System has transformed the way we manage our suppliers. It's efficient and easy to use!"</p>
+          <h4 class="text-xl font-semibold">John Doe</h4>
+          <p class="text-blue-600 dark:text-blue-400">CEO, Example Corp</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow hover:shadow-lg transition">
+          <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">"A game-changer for our procurement process. Highly recommend!"</p>
+          <h4 class="text-xl font-semibold">Jane Smith</h4>
+          <p class="text-blue-600 dark:text-blue-400">Procurement Manager, Tech Solutions</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow hover:shadow-lg transition">
+          <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">"Excellent tool with great support. Our supplier relationships have never been better."</p>
+          <h4 class="text-xl font-semibold">Emily Johnson</h4>
+          <p class="text-blue-600 dark:text-blue-400">Operations Director, Global Industries</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-20 bg-gray-50 dark:bg-gray-800 scroll-animation">
+    <div class="container mx-auto px-6">
+      <h3 class="text-3xl font-bold text-center mb-10">Contact Us</h3>
+      <form class="max-w-2xl mx-auto space-y-6">
+        <input type="text" placeholder="Your Name" class="w-full p-4 rounded border dark:bg-gray-700 dark:border-gray-600" />
+        <input type="email" placeholder="Your Email" class="w-full p-4 rounded border dark:bg-gray-700 dark:border-gray-600" />
+        <textarea placeholder="Your Message" rows="5" class="w-full p-4 rounded border dark:bg-gray-700 dark:border-gray-600"></textarea>
+        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-10">
+    <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between">
+      <div class="mb-8 md:mb-0">
+        <h4 class="font-bold text-white mb-4">Contact</h4>
+        <ul class="space-y-2">
+          <li>Email: <a href="mailto:ayushkumar0211a@gmail.com" class="text-blue-400 hover:underline">ayushkumar0211a@gmail.com</a></li>
+          <li>Phone: +91 9170737146</li>
+          <li>Address: Lovely Professional University, Phagwara, Punjab</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold text-white mb-4">Follow Us</h4>
+        <div class="flex space-x-4">
+          <!-- <a href="#" class="hover:text-blue-400"><svg xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 509.64"><rect width="512" height="509.64" rx="115.61" ry="115.61"/><path fill="#fff" fill-rule="nonzero" d="M323.74 148.35h36.12l-78.91 90.2 92.83 122.73h-72.69l-56.93-74.43-65.15 74.43h-36.14l84.4-96.47-89.05-116.46h74.53l51.46 68.04 59.53-68.04zm-12.68 191.31h20.02l-129.2-170.82H180.4l130.66 170.82z"/></svg></a> -->
+          <a href="#" class="hover:text-blue-400"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.04c-5.5 0-9.96 4.46-9.96 9.96 0 4.41 3.6 8.06 8.19 8.94v-6.34h-2.47v-2.6h2.47v-1.98c0-2.44 1.49-3.78 3.67-3.78 1.05 0 1.95.08 2.21.11v2.56h-1.52c-1.19 0-1.42.57-1.42 1.39v1.82h2.84l-.37 2.6h-2.47v6.34c4.59-.88 8.19-4.53 8.19-8.94 0-5.5-4.46-9.96-9.96-9.96z"/></svg></a>
+          <a href="#" class="hover:text-blue-400"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M7.75 2h8.5C19.55 2 22 4.45 22 7.75v8.5C22 19.55 19.55 22 16.25 22h-8.5C4.45 22 2 19.55 2 16.25v-8.5C2 4.45 4.45 2 7.75 2zm0 1.5C5.68 3.5 4 5.18 4 7.25v8.5C4 18.32 5.68 20 7.75 20h8.5c2.07 0 3.75-1.68 3.75-3.75v-8.5C20 5.68 18.32 4 16.25 4h-8.5zM12 7.5a4.5 4.5 0 110 9 4.5 4.5 0 010-9zm0 1.5a3 3 0 100 6 3 3 0 000-6zm4.5-3.25a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5z"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-8 text-gray-500">
+      &copy; 2025 SRM management - Made by Ayush, Dinesh, Dikshit and Vijay.
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleButton = document.getElementById('dark-mode-toggle');
+      const htmlElement = document.documentElement;
+
+      toggleButton.addEventListener('click', function() {
+        htmlElement.classList.toggle('dark');
+        localStorage.setItem('theme', htmlElement.classList.contains('dark') ? 'dark' : 'light');
+      });
+
+      // Load the saved theme from localStorage
+      if (localStorage.getItem('theme') === 'dark') {
+        htmlElement.classList.add('dark');
+      }
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const scrollElements = document.querySelectorAll('.scroll-animation');
+
+      const elementInView = (el, dividend = 1) => {
+        const elementTop = el.getBoundingClientRect().top;
+
+        return (
+          elementTop <= (window.innerHeight || document.documentElement.clientHeight) / dividend
+        );
+      };
+
+      const displayScrollElement = (element) => {
+        element.classList.add('visible');
+      };
+
+      const handleScrollAnimation = () => {
+        scrollElements.forEach((el) => {
+          if (elementInView(el, 1.25)) {
+            displayScrollElement(el);
+          }
+        })
+      }
+
+      window.addEventListener('scroll', () => {
+        handleScrollAnimation();
+      });
+    });
+  </script>
+</body>
+</html>

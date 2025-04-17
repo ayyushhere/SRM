@@ -1,0 +1,222 @@
+/* style.css */
+body {
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  /* Smooth transition for dark mode */
+  html {
+    transition: background-color 0.3s, color 0.3s;
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom scrollbar for dark mode */
+  body::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+  }
+  
+  body::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    body::-webkit-scrollbar-track {
+      background: #2d2d2d;
+    }
+  
+    body::-webkit-scrollbar-thumb {
+      background: #666;
+    }
+  
+    body::-webkit-scrollbar-thumb:hover {
+      background: #999;
+    }
+  }
+  
+  /* Button Hover Transitions */
+  button, a {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  /* Navbar Animation */
+  nav {
+    transform: translateY(-100%);
+    animation: slideDown 0.5s ease-out forwards;
+  }
+  
+  @keyframes slideDown {
+    to {
+      transform: translateY(0);
+    }
+  }
+  
+  /* Hero Section Animation */
+  .hero-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease-out forwards 0.3s;
+  }
+  
+  .hero-image {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease-out forwards 0.5s;
+  }
+  
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Feature Cards Hover Effect */
+  .feature-card {
+    background-color: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(5px); /* Safari support */
+    backdrop-filter: blur(5px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .feature-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Animations on Scroll */
+  .scroll-animation {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  
+  .scroll-animation.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Hero Section Overlay */
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+  
+  /* Hero Text Styling */
+  .hero-text {
+    position: relative;
+    z-index: 2;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  }
+  
+  /* Features Section Video Background */
+  .features-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+  
+  /* Features Section Fullscreen Adjustment */
+  #features {
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    padding-top: 10px;
+  }
+  
+  #features video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  
+  #features .features-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+  
+  #features .container {
+    position: relative;
+    z-index: 2;
+  }
+  
+  /* Contact Us Section Styling */
+  #contact {
+    background-color: #f9fafb;
+    padding: 40px 0;
+  }
+  
+  #contact h3 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  #contact form {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  #contact input,
+  #contact textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+  }
+  
+  #contact input:focus,
+  #contact textarea:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  #contact button {
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  #contact button:hover {
+    background: linear-gradient(90deg, #0056b3, #003f7f);
+  }
+  
+  /* Adjust Hero Section Padding */
+  .hero-section {
+    padding-bottom: 10px;
+  }
+  

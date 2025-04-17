@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Supplier - SRM System</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+
+  <!-- Navbar -->
+  <nav class="bg-gradient-to-r from-blue-500 to-blue-700 dark:from-gray-800 dark:to-gray-900 shadow-lg fixed w-full z-50">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-white flex items-center">
+        <img src="assets/logo.svg" alt="SRM Logo" class="rounded-md w-8 h-8 mr-2"> SRM System
+      </h1>
+      <div class="hidden md:flex space-x-8">
+        <a href="dashboard.html" class="text-white hover:text-gray-200 transition">Dashboard</a>
+        <a href="suppliers.html" class="text-white hover:text-gray-200 transition">Suppliers</a>
+        <a href="../backend/logout.php" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">Logout</a>
+      </div>
+      <div class="md:hidden">
+        <button class="text-white focus:outline-none" aria-label="Toggle navigation menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-10 pt-28">
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md max-w-xl mx-auto">
+      <h2 class="text-3xl font-semibold mb-6 text-center">Add New Supplier</h2>
+      <form id="supplierForm" class="space-y-4">
+        <div>
+          <label for="name" class="block mb-1">Supplier Name</label>
+          <input type="text" id="name" name="name" required class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+        </div>
+        <div>
+          <label for="email" class="block mb-1">Email</label>
+          <input type="email" id="email" name="email" required class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+        </div>
+        <div>
+          <label for="contact" class="block mb-1">Contact Number</label>
+          <input type="text" id="contact" name="contact" required class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+        </div>
+        <div>
+          <label for="address" class="block mb-1">Address</label>
+          <textarea id="address" name="address" rows="3" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600"></textarea>
+        </div>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg w-full">Add Supplier</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- JS Script -->
+  <script>
+    document.getElementById('supplierForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const contact = document.getElementById('contact').value;
+      const address = document.getElementById('address').value;
+
+      fetch('../backend/add_supplier.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&contact=${encodeURIComponent(contact)}&address=${encodeURIComponent(address)}`
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('✅ Supplier added successfully!');
+          window.location.href = 'suppliers.html';
+        } else {
+          alert('❌ Failed to add supplier: ' + (data.error || 'Unknown error'));
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('❌ Something went wrong while adding the supplier.');
+      });
+    });
+  </script>
+
+</body>
+</html>

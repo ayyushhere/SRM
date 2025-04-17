@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - SRM System</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white">
+
+  <!-- Navbar -->
+  <nav class="bg-gradient-to-r from-blue-500 to-blue-700 dark:from-gray-800 dark:to-gray-900 shadow-lg fixed w-full z-50">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-white flex items-center">
+        <img src="assets/logo.svg" alt="SRM Logo" class="rounded-md w-8 h-8 mr-2"> SRM System
+      </h1>
+      <div class="hidden md:flex space-x-8">
+        <!-- <a href="index.html" class="text-white hover:text-gray-200 transition">Home</a> -->
+        <a href="suppliers.html" class="text-white hover:text-gray-200 transition">Suppliers</a>
+        <!-- <a href="add-supplier.html" class="text-white hover:text-gray-200 transition">Add Supplier</a> -->
+        <a href="orders.html" class="text-white hover:text-gray-200 transition">Orders</a>
+        <!-- <a href="about.html" class="text-white hover:text-gray-200 transition">About Developers</a> -->
+        <a href="../backend/logout.php" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Logout</a>
+
+      </div>
+      <div class="md:hidden">
+        <button class="text-white focus:outline-none" aria-label="Toggle navigation menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard Content -->
+  <main class="container mx-auto px-4 py-10 pt-28">
+    <h2 class="text-3xl font-bold mb-8 text-center">Welcome <span id="username">User</span>, to Your Dashboard</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
+        <h3 class="text-lg font-semibold mb-2">Total Suppliers</h3>
+        <p class="text-3xl font-bold text-blue-600 dark:text-blue-400 total-suppliers">0</p>
+      </div>
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
+        <h3 class="text-lg font-semibold mb-2">Pending Orders</h3>
+        <p class="text-3xl font-bold text-yellow-500 pending-orders">0</p>
+      </div>
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
+        <h3 class="text-lg font-semibold mb-2">Completed Orders</h3>
+        <p class="text-3xl font-bold text-green-500 completed-orders">0</p>
+      </div>
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
+        <h3 class="text-lg font-semibold mb-2">Total Revenue</h3>
+        <p class="text-3xl font-bold text-purple-600 dark:text-purple-400 total-revenue">$0</p>
+      </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-10">
+      <h3 class="text-xl font-semibold mb-4 text-center">Monthly Revenue Overview</h3>
+      <canvas id="revenueChart" class="w-full max-w-4xl mx-auto"></canvas>
+    </div>
+
+    <!-- Recent Orders Table -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+      <h3 class="text-xl font-semibold mb-4 text-center">Recent Orders</h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full table-auto">
+          <thead>
+            <tr class="bg-gray-100 dark:bg-gray-700">
+              <th class="px-4 py-2">Order ID</th>
+              <th class="px-4 py-2">Supplier</th>
+              <th class="px-4 py-2">Amount</th>
+              <th class="px-4 py-2">Status</th>
+            </tr>
+          </thead>
+          <tbody id="recent-orders-body">
+            <!-- Dynamic rows will be inserted here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Set Username (simulated) -->
+    <script>
+      const username = 'Ayush'; // Replace with actual session/user fetch
+      document.getElementById('username').textContent = username;
+    </script>
+
+    <!-- JS for Dynamic Dashboard -->
+    <script>
+      // Fetch dashboard stats
+      async function fetchDashboardData() {
+        try {
+          const response = await fetch('../backend/dashboard_stats.php');
+          const data = await response.json();
+
+          document.querySelector('.total-suppliers').textContent = data.totalSuppliers;
+          document.querySelector('.pending-orders').textContent = data.pendingOrders;
+          document.querySelector('.completed-orders').textContent = data.completedOrders;
+          document.querySelector('.total-revenue').textContent = `$${parseFloat(data.totalRevenue).toLocaleString()}`;
+        } catch (error) {
+          console.error('Error fetching dashboard data:', error);
+        }
+      }
+
+      // Fetch recent orders
+      async function fetchRecentOrders() {
+        try {
+          const response = await fetch('../backend/get_recent_orders.php');
+          const orders = await response.json();
+          const tbody = document.getElementById('recent-orders-body');
+          tbody.innerHTML = '';
+
+          orders.forEach(order => {
+            const row = document.createElement('tr');
+            row.classList.add('border-b', 'dark:border-gray-700');
+            row.innerHTML = `
+              <td class="px-4 py-2">ORD${order.order_id}</td>
+              <td class="px-4 py-2">${order.supplier_name}</td>
+              <td class="px-4 py-2">$${order.amount}</td>
+              <td class="px-4 py-2 ${order.status === 'Completed' ? 'text-green-500' : 'text-yellow-500'}">${order.status}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        } catch (error) {
+          console.error('Error fetching recent orders:', error);
+        }
+      }
+
+      // Render chart
+      async function renderRevenueChart() {
+        try {
+          const response = await fetch('../backend/revenue_chart_data.php');
+          const chartData = await response.json();
+
+          const ctx = document.getElementById('revenueChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: chartData.labels,
+              datasets: [{
+                label: 'Revenue ($)',
+                data: chartData.data,
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  labels: {
+                    color: document.documentElement.classList.contains('dark') ? 'white' : 'black'
+                  }
+                }
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    color: document.documentElement.classList.contains('dark') ? 'white' : 'black'
+                  }
+                },
+                y: {
+                  ticks: {
+                    color: document.documentElement.classList.contains('dark') ? 'white' : 'black'
+                  }
+                }
+              }
+            }
+          });
+        } catch (error) {
+          console.error('Error loading revenue chart:', error);
+        }
+      }
+
+      // Initialize dashboard
+      document.addEventListener('DOMContentLoaded', () => {
+        fetchDashboardData();
+        fetchRecentOrders();
+        renderRevenueChart();
+      });
+    </script>
+
+  </main>
+</body>
+</html>
