@@ -14,14 +14,14 @@ CREATE TABLE suppliers (
 );
 
 -- Table: orders
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
   id INT AUTO_INCREMENT PRIMARY KEY,
   supplier_id INT NOT NULL,
   amount DECIMAL(10, 2) NOT NULL,
-  order_date DATE NOT NULL,
-  status ENUM('Pending', 'Completed', 'Cancelled') NOT NULL,
+  order_date DATE NOT NULL DEFAULT CURRENT_DATE,
+  status ENUM('Pending', 'Completed', 'Cancelled') NOT NULL DEFAULT 'Pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE CASCADE
+  FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
 );
 
 -- Table: users

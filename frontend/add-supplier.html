@@ -1,90 +1,447 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Add Supplier - SRM System</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- AOS Animation Library -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <!-- Boxicons for better icons -->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    /* Custom animations */
+    .scale-in {
+      transform: scale(0.95);
+      opacity: 0;
+      transition: all 0.3s ease-out;
+    }
+    
+    .scale-in.active {
+      transform: scale(1);
+      opacity: 1;
+    }
+    
+    /* Form focus effects */
+    .form-input {
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+    
+    .form-input:focus {
+      border-left: 3px solid #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    }
+    
+    /* Apply Poppins font to the entire document */
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Custom scrollbar styles */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    
+    /* Dark mode scrollbar */
+    .dark ::-webkit-scrollbar-track {
+      background: #374151;
+    }
+    
+    .dark ::-webkit-scrollbar-thumb {
+      background: #6B7280;
+    }
+    
+    .dark ::-webkit-scrollbar-thumb:hover {
+      background: #9CA3AF;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Mobile menu animation style added to existing styles -->
+  <style>
+    .animate-fadeIn {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 
   <!-- Navbar -->
-  <nav class="bg-gradient-to-r from-blue-500 to-blue-700 dark:from-gray-800 dark:to-gray-900 shadow-lg fixed w-full z-50">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-      <h1 class="text-2xl font-bold text-white flex items-center">
-        <img src="assets/logo.svg" alt="SRM Logo" class="rounded-md w-8 h-8 mr-2"> SRM System
+  <nav class="bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg fixed w-full z-50">
+    <div class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+      <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center">
+        <img src="assets/logo.svg" alt="SRM Logo" class="rounded-md w-6 h-6 sm:w-8 sm:h-8 mr-2 transition-transform hover:scale-110"> 
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">SRM System</span>
       </h1>
-      <div class="hidden md:flex space-x-8">
-        <a href="dashboard.html" class="text-white hover:text-gray-200 transition">Dashboard</a>
-        <a href="suppliers.html" class="text-white hover:text-gray-200 transition">Suppliers</a>
-        <a href="../backend/logout.php" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">Logout</a>
+      <!-- Desktop Navigation Menu -->
+      <div class="hidden md:flex space-x-4 lg:space-x-8 items-center">
+        <a href="dashboard.html" class="text-white hover:text-blue-100 transition-all duration-200 border-b-2 border-transparent hover:border-blue-200 py-1 flex items-center">
+          <i class='bx bxs-dashboard mr-1'></i> Dashboard
+        </a>
+        <a href="suppliers.html" class="text-white hover:text-blue-100 transition-all duration-200 border-b-2 border-white hover:border-blue-200 py-1 flex items-center">
+          <i class='bx bx-store mr-1'></i> Suppliers
+        </a>
+        <a href="orders.html" class="text-white hover:text-blue-100 transition-all duration-200 border-b-2 border-transparent hover:border-blue-200 py-1 flex items-center">
+          <i class='bx bx-cart mr-1'></i> Orders
+        </a>
+        <button id="darkModeToggle" class="text-white hover:text-blue-100 mr-4 focus:outline-none" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        <a href="../backend/logout.php" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all shadow hover:shadow-lg transform hover:-translate-y-0.5">Logout</a>
       </div>
-      <div class="md:hidden">
-        <button class="text-white focus:outline-none" aria-label="Toggle navigation menu">
+      
+      <!-- Mobile Navigation Controls -->
+      <div class="md:hidden flex items-center">
+        <button id="mobile-dark-mode-toggle" class="text-white hover:text-blue-100 mr-3 focus:outline-none" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        <button id="mobile-menu-button" class="text-white focus:outline-none" aria-label="Toggle navigation menu">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
           </svg>
         </button>
       </div>
     </div>
+    
+    <!-- Mobile Menu (Hidden by default) -->
+    <div id="mobile-menu" class="hidden absolute top-full left-0 right-0 flex-col w-full bg-blue-600 shadow-lg pb-4 z-50">
+      <a href="dashboard.html" class="px-6 py-3 text-white hover:bg-blue-700 transition-colors flex items-center">
+        <i class='bx bxs-dashboard mr-2'></i> Dashboard
+      </a>
+      <a href="suppliers.html" class="px-6 py-3 text-white bg-blue-700 transition-colors flex items-center">
+        <i class='bx bx-store mr-2'></i> Suppliers
+      </a>
+      <a href="orders.html" class="px-6 py-3 text-white hover:bg-blue-700 transition-colors flex items-center">
+        <i class='bx bx-cart mr-2'></i> Orders
+      </a>
+      <a href="../backend/logout.php" class="mx-6 mt-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all text-center flex items-center justify-center">
+        <i class='bx bx-log-out mr-2'></i> Logout
+      </a>
+    </div>
   </nav>
 
   <!-- Main Content -->
   <main class="container mx-auto px-4 py-10 pt-28">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md max-w-xl mx-auto">
-      <h2 class="text-3xl font-semibold mb-6 text-center">Add New Supplier</h2>
-      <form id="supplierForm" class="space-y-4">
-        <div>
-          <label for="name" class="block mb-1">Supplier Name</label>
-          <input type="text" id="name" name="name" required class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+    <!-- Hero Section with Form Title -->
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 p-6 sm:p-8 mb-8 shadow-lg" data-aos="fade-down">
+      <!-- Decorative Elements -->
+      <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-blue-500 opacity-10 rounded-full blur-2xl"></div>
+      <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-indigo-500 opacity-10 rounded-full blur-2xl"></div>
+      
+      <div class="relative z-10">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+          <div>
+            <div class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-2">
+              <span class="flex items-center">
+                <span class="w-2 h-2 rounded-full bg-blue-600 mr-2"></span>
+                Create New Supplier
+              </span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Add New Supplier</h1>
+            <p class="text-gray-600 mt-2">Add a new supplier to your supplier management system.</p>
+          </div>
+          
+          <a href="suppliers.html" class="mt-4 md:mt-0 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all flex items-center">
+            <i class="bx bx-arrow-back mr-2"></i>
+            Back to Suppliers
+          </a>
         </div>
-        <div>
-          <label for="email" class="block mb-1">Email</label>
-          <input type="email" id="email" name="email" required class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-6 items-start">
+      <!-- Left side - Form -->
+      <div class="bg-white p-8 rounded-xl shadow-lg max-w-md mx-auto w-full md:w-2/3 scale-in" id="form-container" data-aos="fade-up">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-gray-800">Supplier Details</h2>
+          <div class="bg-blue-100 p-2 rounded-full">
+            <i class='bx bx-building-house text-blue-600 text-2xl'></i>
+          </div>
         </div>
-        <div>
-          <label for="contact" class="block mb-1">Contact Number</label>
-          <input type="text" id="contact" name="contact" required class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+        
+        <form id="supplierForm" class="space-y-6" action="../backend/add_supplier.php" method="POST">
+          <div class="relative">
+            <label for="name" class="block mb-2 text-sm font-medium text-gray-700">
+              <i class='bx bx-user mr-2 text-blue-500'></i>Supplier Name
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="bx bx-building text-gray-400"></i>
+              </div>
+              <input type="text" id="name" name="name" required 
+                   class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900">
+            </div>
+          </div>
+          
+          <div class="relative">
+            <label for="email" class="block mb-2 text-sm font-medium text-gray-700">
+              <i class='bx bx-envelope mr-2 text-blue-500'></i>Email Address
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="bx bx-envelope text-gray-400"></i>
+              </div>
+              <input type="email" id="email" name="email" required
+                     class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900">
+            </div>
+          </div>
+          
+          <div class="relative">
+            <label for="phone" class="block mb-2 text-sm font-medium text-gray-700">
+              <i class='bx bx-phone mr-2 text-blue-500'></i>Phone Number
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="bx bx-phone text-gray-400"></i>
+              </div>
+              <input type="tel" id="phone" name="phone" required
+                     class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900">
+            </div>
+          </div>
+          
+          <div class="relative">
+            <label for="address" class="block mb-2 text-sm font-medium text-gray-700">
+              <i class='bx bx-map mr-2 text-blue-500'></i>Address
+            </label>
+            <div class="relative">
+              <div class="absolute top-3 left-3 pointer-events-none">
+                <i class="bx bx-map-pin text-gray-400"></i>
+              </div>
+              <textarea id="address" name="address" rows="3" required
+                     class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"></textarea>
+            </div>
+          </div>
+          
+          <div class="pt-4 flex justify-end space-x-3">
+            <a href="suppliers.html" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
+              Cancel
+            </a>
+            <button type="submit" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg shadow-lg hover:shadow-blue-500/20 transition-all">
+              <i class='bx bx-save mr-2'></i>Save Supplier
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Right side - Information -->
+      <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl shadow-md max-w-md mx-auto w-full md:w-1/3 scale-in hidden md:block" data-aos="fade-left" data-aos-delay="100">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Supplier Information</h3>
+        
+        <div class="space-y-4">
+          <div class="bg-white p-4 rounded-lg shadow-sm">
+            <h4 class="font-medium text-blue-600 mb-2 flex items-center">
+              <i class='bx bx-info-circle mr-2'></i>What is a Supplier?
+            </h4>
+            <p class="text-sm text-gray-600">
+              A supplier is a company or individual that provides goods or services to your business. Adding suppliers to your system helps you manage your supply chain effectively.
+            </p>
+          </div>
+          
+          <div class="bg-white p-4 rounded-lg shadow-sm">
+            <h4 class="font-medium text-blue-600 mb-2 flex items-center">
+              <i class='bx bx-bulb mr-2'></i>Best Practices
+            </h4>
+            <p class="text-sm text-gray-600">
+              <span class="block mb-1">• Always verify supplier contact information</span>
+              <span class="block mb-1">• Include complete address details</span>
+              <span class="block">• Use a professional email address for communication</span>
+            </p>
+          </div>
+          
+          <div class="bg-white p-4 rounded-lg shadow-sm">
+            <h4 class="font-medium text-blue-600 mb-2 flex items-center">
+              <i class='bx bx-help-circle mr-2'></i>Need Help?
+            </h4>
+            <p class="text-sm text-gray-600">
+              If you need assistance with adding suppliers, please contact our support team at <a href="mailto:support@srm.com" class="text-blue-500 hover:underline">support@srm.com</a>.
+            </p>
+          </div>
         </div>
-        <div>
-          <label for="address" class="block mb-1">Address</label>
-          <textarea id="address" name="address" rows="3" class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600"></textarea>
-        </div>
-        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg w-full">Add Supplier</button>
-      </form>
+      </div>
     </div>
   </main>
 
   <!-- JS Script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <script>
+    // Initialize AOS animations
+    document.addEventListener('DOMContentLoaded', function() {
+      AOS.init({
+        duration: 800,
+        once: true
+      });
+      
+      // Activate scale-in elements
+      setTimeout(() => {
+        document.querySelectorAll('.scale-in').forEach(el => {
+          el.classList.add('active');
+        });
+      }, 100);
+      
+      // Initialize mobile menu button
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      
+      if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+
+    // Form submission
     document.getElementById('supplierForm').addEventListener('submit', function (e) {
       e.preventDefault();
+      
+      // Show loading state on button
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin mr-2"></i>Processing...';
+      submitBtn.disabled = true;
 
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
-      const contact = document.getElementById('contact').value;
+      const phone = document.getElementById('phone').value;
       const address = document.getElementById('address').value;
 
       fetch('../backend/add_supplier.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&contact=${encodeURIComponent(contact)}&address=${encodeURIComponent(address)}`
+        body: `name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}&address=${encodeURIComponent(address)}`
       })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert('✅ Supplier added successfully!');
-          window.location.href = 'suppliers.html';
+          // Success notification
+          showNotification('✅ Supplier added successfully!', 'success');
+          
+          // Redirect after a short delay
+          setTimeout(() => {
+            window.location.href = 'suppliers.html';
+          }, 1500);
         } else {
-          alert('❌ Failed to add supplier: ' + (data.error || 'Unknown error'));
+          // Error notification
+          showNotification('❌ ' + (data.error || 'Unknown error'), 'error');
+          submitBtn.innerHTML = originalBtnText;
+          submitBtn.disabled = false;
         }
       })
       .catch(err => {
         console.error(err);
-        alert('❌ Something went wrong while adding the supplier.');
+        showNotification('❌ Something went wrong while adding the supplier.', 'error');
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
       });
     });
+    
+    // Custom notification function
+    function showNotification(message, type) {
+      // Remove any existing notifications
+      const existingNotifications = document.querySelectorAll('.notification');
+      existingNotifications.forEach(notification => notification.remove());
+      
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = `notification fixed top-24 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-all duration-500 translate-x-full max-w-sm`;
+      
+      // Set styles based on notification type
+      if (type === 'success') {
+        notification.classList.add('bg-green-500', 'text-white');
+      } else if (type === 'error') {
+        notification.classList.add('bg-red-500', 'text-white');
+      } else {
+        notification.classList.add('bg-blue-500', 'text-white');
+      }
+      
+      notification.innerHTML = `
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-x-circle'} text-2xl'></i>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium">${message}</p>
+          </div>
+          <div class="ml-auto pl-3">
+            <button class="inline-flex text-white focus:outline-none">
+              <i class='bx bx-x text-xl'></i>
+            </button>
+          </div>
+        </div>
+      `;
+      
+      // Add to DOM
+      document.body.appendChild(notification);
+      
+      // Animate in
+      setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+        notification.classList.add('translate-x-0');
+      }, 10);
+      
+      // Add close button functionality
+      const closeBtn = notification.querySelector('button');
+      closeBtn.addEventListener('click', () => {
+        notification.classList.remove('translate-x-0');
+        notification.classList.add('translate-x-full');
+        setTimeout(() => notification.remove(), 500);
+      });
+      
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        if (document.body.contains(notification)) {
+          notification.classList.remove('translate-x-0');
+          notification.classList.add('translate-x-full');
+          setTimeout(() => notification.remove(), 500);
+        }
+      }, 5000);
+    }
+  });
   </script>
 
+  <!-- Mobile Menu Script -->
+  <script src="js/mobile-menu.js"></script>
+  
+  <script>
+    // Initialize mobile dark mode toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileDarkModeToggle = document.getElementById('mobile-dark-mode-toggle');
+      if (mobileDarkModeToggle) {
+        mobileDarkModeToggle.addEventListener('click', function() {
+          document.documentElement.classList.toggle('dark');
+          localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        });
+      }
+    });
+  </script>
 </body>
 </html>

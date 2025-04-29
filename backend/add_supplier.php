@@ -11,7 +11,7 @@ if (!$conn) {
 // Get POST data
 $name = $_POST['name'] ?? null;
 $email = $_POST['email'] ?? null;
-$phone = $_POST['contact'] ?? null; // Change 'contact' to 'phone'
+$phone = $_POST['phone'] ?? null; // Change 'contact' to 'phone'
 $location = $_POST['address'] ?? null; // Change 'address' to 'location'
 
 // Validate inputs

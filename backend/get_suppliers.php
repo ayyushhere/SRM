@@ -1,29 +1,44 @@
 <?php
 header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 include '../config/db.php';
 
 // Check if connection is valid
 if (!$conn) {
-    echo json_encode(["error" => "Database connection failed"]);
+    error_log("Database connection failed in get_suppliers.php");
+    echo json_encode([]);
     exit();
 }
 
-// SQL query
-$sql = "SELECT id, name, email, phone, location FROM suppliers ORDER BY id DESC";
-$result = $conn->query($sql);
+try {
+    // SQL query
+    $sql = "SELECT id, name, email, phone, location FROM suppliers ORDER BY id DESC";
+    $result = $conn->query($sql);
 
-$suppliers = [];
-
-if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $suppliers[] = $row;
+    if ($result === false) {
+        error_log("Query failed in get_suppliers.php: " . $conn->error);
+        echo json_encode([]);
+        exit();
     }
-    echo json_encode($suppliers);
-} else if ($result && $result->num_rows == 0) {
-    echo json_encode(["message" => "No suppliers found"]);
-} else {
-    echo json_encode(["error" => "Query failed", "details" => $conn->error]);
-}
 
-$conn->close();
+    $suppliers = [];
+    
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $suppliers[] = $row;
+        }
+    }
+
+    echo json_encode($suppliers);
+
+} catch (Exception $e) {
+    error_log("Exception in get_suppliers.php: " . $e->getMessage());
+    echo json_encode([]);
+} finally {
+    if ($conn) {
+        $conn->close();
+    }
+}
 ?>

@@ -20,6 +20,7 @@ if ($conn->connect_error) {
 $totalSuppliers = 0;
 $pendingOrders = 0;
 $completedOrders = 0;
+$totalOrders = 0;
 $totalRevenue = 0.0;
 
 if ($res = $conn->query("SELECT COUNT(*) as total FROM suppliers")) {
@@ -36,6 +37,9 @@ if ($res = $conn->query("SELECT COUNT(*) as total FROM orders WHERE status = 'Co
     $completedOrders = $res->fetch_assoc()['total'] ?? 0;
 }
 
+// ✅ Calculate total orders (pending + completed)
+$totalOrders = $pendingOrders + $completedOrders;
+
 // ✅ Fetch total revenue
 if ($res = $conn->query("SELECT SUM(amount) as total FROM orders WHERE status = 'Completed'")) {
     $totalRevenue = $res->fetch_assoc()['total'] ?? 0;
@@ -45,6 +49,7 @@ echo json_encode([
     'totalSuppliers' => $totalSuppliers,
     'pendingOrders' => $pendingOrders,
     'completedOrders' => $completedOrders,
+    'totalOrders' => $totalOrders,
     'totalRevenue' => number_format((float)$totalRevenue, 2, '.', '')  // optional formatting
 ]);
 

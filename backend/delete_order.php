@@ -16,7 +16,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $order_id = intval($_GET['id']);
 
     // Prepare delete statement
-    $stmt = $conn->prepare("DELETE FROM orders WHERE order_id = ?");
+    $stmt = $conn->prepare("DELETE FROM orders WHERE id = ?");
     if ($stmt) {
         $stmt->bind_param("i", $order_id);
 
@@ -24,13 +24,13 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             echo json_encode(['success' => true, 'message' => 'Order deleted successfully']);
         } else {
             http_response_code(500);
-            echo json_encode(['success' => false, 'error' => 'Failed to delete order']);
+            echo json_encode(['success' => false, 'error' => 'Failed to delete order: ' . $conn->error]);
         }
 
         $stmt->close();
     } else {
         http_response_code(500);
-        echo json_encode(['success' => false, 'error' => 'Failed to prepare delete statement']);
+        echo json_encode(['success' => false, 'error' => 'Failed to prepare delete statement: ' . $conn->error]);
     }
 } else {
     http_response_code(400);

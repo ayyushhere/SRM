@@ -72,6 +72,13 @@ body {
     animation: fadeInUp 0.8s ease-out forwards 0.5s;
   }
   
+  /* Dark mode adjustments for hero image */
+  .dark .hero-image img {
+    filter: brightness(0.85) contrast(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
   @keyframes fadeInUp {
     to {
       opacity: 1;
@@ -218,5 +225,98 @@ body {
   /* Adjust Hero Section Padding */
   .hero-section {
     padding-bottom: 10px;
+  }
+  
+  /* Custom styles for the SRM system */
+
+  /* Ensure dark mode is properly configured */
+  .dark body {
+    @apply bg-gray-900;
+    @apply text-white;
+  }
+
+  /* Hero image in dark mode - additional styling for better visibility */
+  .dark .hero-image img {
+    filter: brightness(0.85) contrast(1.1) saturate(1.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  /* Smooth transitions for dark mode toggle */
+  body, 
+  .bg-white, 
+  .bg-gray-50, 
+  .bg-gray-100, 
+  .bg-gray-700, 
+  .bg-gray-800, 
+  .bg-gray-900,
+  .text-gray-300,
+  .text-gray-600,
+  .text-gray-800,
+  .text-white,
+  .from-blue-500,
+  .from-gray-800,
+  .to-blue-700,
+  .to-gray-900 {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  /* Additional styles can be added below */
+  
+  /* Dark mode styles */
+  .dark {
+    background-color: #1a1a2e;
+    color: #f1f1f1;
+  }
+
+  .dark .bg-white {
+    background-color: #16213e;
+  }
+
+  .dark .hero-img-filter {
+    filter: brightness(0.85) contrast(1.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Dark mode styles for contact form */
+  .dark #contact {
+    background-color: #1a202c;
+  }
+
+  .dark #contact h3 {
+    color: #f7fafc;
+  }
+
+  .dark #contact form {
+    background-color: #2d3748;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .dark #contact input,
+  .dark #contact textarea {
+    background-color: #1f2937;
+    color: #f7fafc;
+    border-color: #4a5568;
+  }
+
+  .dark #contact input::placeholder,
+  .dark #contact textarea::placeholder {
+    color: #a0aec0;
+  }
+
+  .dark #contact input:focus,
+  .dark #contact textarea:focus {
+    border-color: #3182ce;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+  }
+
+  .dark #contact button {
+    background: linear-gradient(90deg, #2563eb, #1d4ed8);
+  }
+
+  .dark #contact button:hover {
+    background: linear-gradient(90deg, #1d4ed8, #1e40af);
   }
   

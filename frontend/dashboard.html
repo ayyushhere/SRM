@@ -4,137 +4,954 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard - SRM System</title>
+  
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- AOS Animation Library -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <!-- CountUp.js for number animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.8/countUp.min.js"></script>
+  <!-- Boxicons for better icons -->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    /* Apply Poppins font to the entire document */
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Only keeping essential custom styles that can't be achieved with Tailwind */
+    .table-row-animated {
+      opacity: 0;
+      animation: fadeInUp 0.4s ease forwards;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Mobile menu animation */
+    .animate-fadeIn {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Progress bar widths for stat cards */
+    .progress-75 { width: 75%; }
+    .progress-60 { width: 60%; }
+    .progress-45 { width: 45%; }
+    .progress-85 { width: 85%; }
+    
+    /* Responsive table for mobile */
+    @media (max-width: 640px) {
+      .mobile-row {
+        display: block;
+        border-bottom: 1px solid #e5e5eb;
+        padding: 0.75rem 0;
+      }
+      
+      .mobile-row td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        text-align: right;
+        border-bottom: 1px solid rgba(229, 231, 235, 0.2);
+      }
+      
+      .mobile-row td:last-child {
+        border-bottom: none;
+      }
+      
+      .mobile-row td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        float: left;
+        text-align: left;
+        color: #6b7280;
+      }
+      
+      .dark .mobile-row td:before {
+        color: #9ca3af;
+      }
+      
+      /* Hide table header on mobile */
+      @media (max-width: 640px) {
+        table thead {
+          display: none;
+        }
+      }
+    }
+  </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white">
 
   <!-- Navbar -->
-  <nav class="bg-gradient-to-r from-blue-500 to-blue-700 dark:from-gray-800 dark:to-gray-900 shadow-lg fixed w-full z-50">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-      <h1 class="text-2xl font-bold text-white flex items-center">
-        <img src="assets/logo.svg" alt="SRM Logo" class="rounded-md w-8 h-8 mr-2"> SRM System
+  <nav class="bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-gray-800 dark:to-gray-900 shadow-lg fixed w-full z-50">
+    <div class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+      <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center">
+        <img src="assets/logo.svg" alt="SRM Logo" class="rounded-md w-6 h-6 sm:w-8 sm:h-8 mr-2 transition-transform hover:scale-110"> 
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">SRM System</span>
       </h1>
-      <div class="hidden md:flex space-x-8">
-        <!-- <a href="index.html" class="text-white hover:text-gray-200 transition">Home</a> -->
-        <a href="suppliers.html" class="text-white hover:text-gray-200 transition">Suppliers</a>
-        <!-- <a href="add-supplier.html" class="text-white hover:text-gray-200 transition">Add Supplier</a> -->
-        <a href="orders.html" class="text-white hover:text-gray-200 transition">Orders</a>
-        <!-- <a href="about.html" class="text-white hover:text-gray-200 transition">About Developers</a> -->
-        <a href="../backend/logout.php" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Logout</a>
-
+      <!-- Desktop Navigation Menu -->
+      <div class="hidden md:flex space-x-4 lg:space-x-8 items-center">
+        <a href="dashboard.html" class="text-white hover:text-blue-100 transition-all duration-200 border-b-2 border-white hover:border-blue-200 py-1 flex items-center">
+          <i class='bx bxs-dashboard mr-1'></i> Dashboard
+        </a>
+        <a href="suppliers.html" class="text-white hover:text-blue-100 transition-all duration-200 border-b-2 border-transparent hover:border-blue-200 py-1 flex items-center">
+          <i class='bx bx-store mr-1'></i> Suppliers
+        </a>
+        <a href="orders.html" class="text-white hover:text-blue-100 transition-all duration-200 border-b-2 border-transparent hover:border-blue-200 py-1 flex items-center">
+          <i class='bx bx-cart mr-1'></i> Orders
+        </a>
+        <button id="darkModeToggle" class="text-white hover:text-blue-100 mr-4 focus:outline-none" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <!-- Sun icon for light mode -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 dark:hidden" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+          </svg>
+          <!-- Moon icon for dark mode -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:block" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+          </svg>
+        </button>
+        <a href="../backend/logout.php" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all shadow hover:shadow-lg transform hover:-translate-y-0.5">Logout</a>
       </div>
-      <div class="md:hidden">
-        <button class="text-white focus:outline-none" aria-label="Toggle navigation menu">
+      
+      <!-- Mobile Navigation Controls -->
+      <div class="md:hidden flex items-center">
+        <button id="mobile-dark-mode-toggle" class="text-white hover:text-blue-100 mr-3 focus:outline-none" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <!-- Sun icon for light mode -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 dark:hidden" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+          </svg>
+          <!-- Moon icon for dark mode -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:block" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+          </svg>
+        </button>
+        <button id="mobile-menu-button" class="text-white focus:outline-none" aria-label="Toggle navigation menu">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
           </svg>
         </button>
       </div>
     </div>
+    
+    <!-- Mobile Menu (Hidden by default) -->
+    <div id="mobile-menu" class="hidden absolute top-full left-0 right-0 flex-col w-full bg-blue-600 dark:bg-gray-800 shadow-lg pb-4 z-50">
+      <a href="dashboard.html" class="px-6 py-3 text-white hover:bg-blue-700 dark:hover:bg-gray-700 transition-colors flex items-center">
+        <i class='bx bxs-dashboard mr-2'></i> Dashboard
+      </a>
+      <a href="suppliers.html" class="px-6 py-3 text-white hover:bg-blue-700 dark:hover:bg-gray-700 transition-colors flex items-center">
+        <i class='bx bx-store mr-2'></i> Suppliers
+      </a>
+      <a href="orders.html" class="px-6 py-3 text-white hover:bg-blue-700 dark:hover:bg-gray-700 transition-colors flex items-center">
+        <i class='bx bx-cart mr-2'></i> Orders
+      </a>
+      <a href="../backend/logout.php" class="mx-6 mt-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all text-center flex items-center justify-center">
+        <i class='bx bx-log-out mr-2'></i> Logout
+      </a>
+    </div>
   </nav>
 
   <!-- Dashboard Content -->
-  <main class="container mx-auto px-4 py-10 pt-28">
-    <h2 class="text-3xl font-bold mb-8 text-center">Welcome <span id="username">User</span>, to Your Dashboard</h2>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
-        <h3 class="text-lg font-semibold mb-2">Total Suppliers</h3>
-        <p class="text-3xl font-bold text-blue-600 dark:text-blue-400 total-suppliers">0</p>
-      </div>
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
-        <h3 class="text-lg font-semibold mb-2">Pending Orders</h3>
-        <p class="text-3xl font-bold text-yellow-500 pending-orders">0</p>
-      </div>
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
-        <h3 class="text-lg font-semibold mb-2">Completed Orders</h3>
-        <p class="text-3xl font-bold text-green-500 completed-orders">0</p>
-      </div>
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
-        <h3 class="text-lg font-semibold mb-2">Total Revenue</h3>
-        <p class="text-3xl font-bold text-purple-600 dark:text-purple-400 total-revenue">$0</p>
+  <main class="container mx-auto px-4 py-8 pt-24 sm:pt-28">
+    <!-- Enhanced Hero Section with Modern Design -->
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 shadow-lg" data-aos="fade-down">
+      <!-- Decorative Elements -->
+      <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-blue-500 opacity-10 rounded-full blur-2xl"></div>
+      <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-32 h-32 bg-indigo-500 opacity-10 rounded-full blur-2xl"></div>
+      
+      <div class="relative z-10 flex flex-col md:flex-row items-center justify-between">
+        <!-- Welcome Text -->
+        <div class="text-center md:text-left mb-6 md:mb-0 w-full md:w-auto">
+          <div class="inline-flex items-center justify-center md:justify-start mb-3 bg-white/30 dark:bg-gray-700/30 px-3 py-1 rounded-full text-xs font-medium text-blue-700 dark:text-blue-300">
+            <i class='bx bx-check-shield mr-1'></i> Dashboard Overview
+          </div>
+          <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+              Welcome back, 
+            </span>
+            <span id="username" class="relative bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 inline-block">
+              User
+              <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 animate-pulse"></span>
+            </span>
+          </h2>
+          <p class="text-gray-600 dark:text-gray-300 text-sm sm:text-base max-w-lg" id="welcome-message">
+            Here's what's happening with your SRM system today
+          </p>
+        </div>
+        
+        <!-- Date/Time Card -->
+        <div class="flex flex-col sm:flex-row items-center bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl p-3 shadow-sm border border-white/20 dark:border-gray-700/20 w-full md:w-auto">
+          <div class="flex items-center px-4 py-2 w-full sm:w-auto">
+            <div class="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-lg mr-3">
+              <i class='bx bx-calendar text-blue-600 dark:text-blue-400'></i>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Date</p>
+              <p class="text-sm font-medium text-gray-700 dark:text-gray-200" id="current-date">Loading date...</p>
+            </div>
+          </div>
+          
+          <div class="h-px w-full sm:h-10 sm:w-px bg-gray-200 dark:bg-gray-700 my-2 sm:my-0 sm:mx-2"></div>
+          
+          <div class="flex items-center px-4 py-2 w-full sm:w-auto">
+            <div class="bg-indigo-100 dark:bg-indigo-900/30 p-2 rounded-lg mr-3">
+              <i class='bx bx-time text-indigo-600 dark:text-indigo-400'></i>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Time</p>
+              <p class="text-sm font-medium text-gray-700 dark:text-gray-200" id="current-time">Loading time...</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Chart Section -->
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-10">
-      <h3 class="text-xl font-semibold mb-4 text-center">Monthly Revenue Overview</h3>
-      <canvas id="revenueChart" class="w-full max-w-4xl mx-auto"></canvas>
+    <!-- Loading state container -->
+    <div id="loading-container" class="mb-10 text-center">
+      <div class="border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full w-8 h-8 animate-spin mx-auto"></div>
+      <p class="text-gray-500 dark:text-gray-400 mt-2">Loading your dashboard data...</p>
     </div>
 
-    <!-- Recent Orders Table -->
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-      <h3 class="text-xl font-semibold mb-4 text-center">Recent Orders</h3>
-      <div class="overflow-x-auto">
-        <table class="min-w-full table-auto">
-          <thead>
-            <tr class="bg-gray-100 dark:bg-gray-700">
-              <th class="px-4 py-2">Order ID</th>
-              <th class="px-4 py-2">Supplier</th>
-              <th class="px-4 py-2">Amount</th>
-              <th class="px-4 py-2">Status</th>
-            </tr>
-          </thead>
-          <tbody id="recent-orders-body">
-            <!-- Dynamic rows will be inserted here -->
-          </tbody>
-        </table>
+    <!-- Dashboard content (initially hidden) -->
+    <div id="dashboard-content" class="hidden">
+      <!-- Modern Stat Cards with Enhanced Design -->  
+      <section class="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+        <!-- Suppliers Card -->  
+        <div class="group relative overflow-hidden bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+          <!-- Background Decoration -->  
+          <div class="absolute -top-12 -right-12 w-24 h-24 rounded-full bg-blue-500/10 group-hover:bg-blue-500/20 transition-all duration-300"></div>
+          <div class="absolute -bottom-12 -left-12 w-24 h-24 rounded-full bg-blue-500/10 group-hover:bg-blue-500/20 transition-all duration-300"></div>
+          
+          <div class="flex items-start">
+            <!-- Icon Container with Gradient -->  
+            <div class="mr-4 p-3 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-110">
+              <i class='bx bx-store text-2xl'></i>
+            </div>
+            
+            <!-- Content -->  
+            <div class="flex-grow">
+              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Suppliers</h3>
+              <div class="flex items-baseline">
+                <p class="text-3xl font-bold text-gray-800 dark:text-white" id="supplier-count">0</p>
+                <span class="ml-2 text-xs font-medium text-green-500 bg-green-100 dark:bg-green-900/30 dark:text-green-400 px-1.5 py-0.5 rounded">+12%</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Progress Indicator -->  
+          <div class="mt-4 pt-2 border-t border-gray-100 dark:border-gray-700">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-gray-500 dark:text-gray-400">Monthly Goal</span>
+              <span class="text-gray-700 dark:text-gray-300 font-medium">75%</span>
+            </div>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+              <div class="bg-blue-600 h-1.5 rounded-full progress-75"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Orders Card -->  
+        <div class="group relative overflow-hidden bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+          <!-- Background Decoration -->  
+          <div class="absolute -top-12 -right-12 w-24 h-24 rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-all duration-300"></div>
+          <div class="absolute -bottom-12 -left-12 w-24 h-24 rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-all duration-300"></div>
+          
+          <div class="flex items-start">
+            <!-- Icon Container with Gradient -->  
+            <div class="mr-4 p-3 rounded-lg bg-gradient-to-br from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 text-white shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-110">
+              <i class='bx bx-cart text-2xl'></i>
+            </div>
+            
+            <!-- Content -->  
+            <div class="flex-grow">
+              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Orders</h3>
+              <div class="flex items-baseline">
+                <p class="text-3xl font-bold text-gray-800 dark:text-white" id="order-count">0</p>
+                <span class="ml-2 text-xs font-medium text-green-500 bg-green-100 dark:bg-green-900/30 dark:text-green-400 px-1.5 py-0.5 rounded">+8%</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Progress Indicator -->  
+          <div class="mt-4 pt-2 border-t border-gray-100 dark:border-gray-700">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-gray-500 dark:text-gray-400">Monthly Goal</span>
+              <span class="text-gray-700 dark:text-gray-300 font-medium">60%</span>
+            </div>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+              <div class="bg-green-600 h-1.5 rounded-full progress-60"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Pending Orders Card -->  
+        <div class="group relative overflow-hidden bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+          <!-- Background Decoration -->  
+          <div class="absolute -top-12 -right-12 w-24 h-24 rounded-full bg-purple-500/10 group-hover:bg-purple-500/20 transition-all duration-300"></div>
+          <div class="absolute -bottom-12 -left-12 w-24 h-24 rounded-full bg-purple-500/10 group-hover:bg-purple-500/20 transition-all duration-300"></div>
+          
+          <div class="flex items-start">
+            <!-- Icon Container with Gradient -->  
+            <div class="mr-4 p-3 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 text-white shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-110">
+              <i class='bx bx-time text-2xl'></i>
+            </div>
+            
+            <!-- Content -->  
+            <div class="flex-grow">
+              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Pending Orders</h3>
+              <div class="flex items-baseline">
+                <p class="text-3xl font-bold text-gray-800 dark:text-white" id="pending-count">0</p>
+                <span class="ml-2 text-xs font-medium text-red-500 bg-red-100 dark:bg-red-900/30 dark:text-red-400 px-1.5 py-0.5 rounded">+5%</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Progress Indicator -->  
+          <div class="mt-4 pt-2 border-t border-gray-100 dark:border-gray-700">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-gray-500 dark:text-gray-400">Resolution Rate</span>
+              <span class="text-gray-700 dark:text-gray-300 font-medium">45%</span>
+            </div>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+              <div class="bg-purple-600 h-1.5 rounded-full progress-45"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Revenue Card -->  
+        <div class="group relative overflow-hidden bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+          <!-- Background Decoration -->  
+          <div class="absolute -top-12 -right-12 w-24 h-24 rounded-full bg-yellow-500/10 group-hover:bg-yellow-500/20 transition-all duration-300"></div>
+          <div class="absolute -bottom-12 -left-12 w-24 h-24 rounded-full bg-yellow-500/10 group-hover:bg-yellow-500/20 transition-all duration-300"></div>
+          
+          <div class="flex items-start">
+            <!-- Icon Container with Gradient -->  
+            <div class="mr-4 p-3 rounded-lg bg-gradient-to-br from-yellow-500 to-yellow-600 dark:from-yellow-600 dark:to-yellow-700 text-white shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-110">
+              <i class='bx bx-dollar-circle text-2xl'></i>
+            </div>
+            
+            <!-- Content -->  
+            <div class="flex-grow">
+              <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Revenue</h3>
+              <div class="flex items-baseline">
+                <p class="text-3xl font-bold text-gray-800 dark:text-white whitespace-nowrap overflow-hidden text-ellipsis" id="revenue">$0</p>
+                <span class="ml-2 text-xs font-medium text-green-500 bg-green-100 dark:bg-green-900/30 dark:text-green-400 px-1.5 py-0.5 rounded">+15%</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Progress Indicator -->  
+          <div class="mt-4 pt-2 border-t border-gray-100 dark:border-gray-700">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-gray-500 dark:text-gray-400">Quarterly Target</span>
+              <span class="text-gray-700 dark:text-gray-300 font-medium">85%</span>
+            </div>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+              <div class="bg-yellow-600 h-1.5 rounded-full progress-85"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Modern Tab System with Enhanced Design -->
+      <div class="mb-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 relative">
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-blue-500/5 rounded-full blur-2xl"></div>
+        <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-indigo-500/5 rounded-full blur-2xl"></div>
+        
+        <!-- Modern Tab Navigation -->
+        <div class="flex border-b border-gray-200 dark:border-gray-700 relative z-10 bg-gray-50/50 dark:bg-gray-800/50 px-2 pt-2">
+          <button id="overview-tab" class="tab-btn flex items-center px-5 py-3 text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-700 rounded-t-lg border-b-2 border-blue-600 dark:border-blue-400 font-medium transition-all duration-200 shadow-sm" title="View overview data">
+            <i class='bx bx-line-chart mr-2'></i>
+            Overview
+          </button>
+          <button id="revenue-tab" class="tab-btn flex items-center px-5 py-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 border-b-2 border-transparent font-medium transition-all duration-200" title="View revenue analysis">
+            <i class='bx bx-dollar-circle mr-2'></i>
+            Revenue Analysis
+          </button>
+          <div class="flex-grow border-b-2 border-transparent"></div>
+        </div>
+        
+        <!-- Tab Content with Enhanced Design -->
+        <div class="p-6 relative z-10">
+          <!-- Overview Tab Content (shown by default) -->
+          <div id="overview-content" class="tab-content">
+            <!-- Chart Section with Modern Design -->
+            <div class="transform scale-95 opacity-0 transition-all duration-300" data-aos="zoom-in">
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white flex items-center mb-3 sm:mb-0">
+                  <span class="bg-blue-100 dark:bg-blue-900/30 p-1.5 rounded-lg mr-2">
+                    <i class='bx bx-bar-chart-alt-2 text-blue-600 dark:text-blue-400'></i>
+                  </span>
+                  Monthly Revenue Overview
+                </h3>
+                
+                <!-- Period Selector -->
+                <div class="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1 w-full sm:w-auto">
+                  <button class="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-600 rounded-md shadow-sm text-blue-600 dark:text-blue-400 flex-1 sm:flex-none" title="View monthly data">Monthly</button>
+                  <button class="px-3 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 flex-1 sm:flex-none" title="View quarterly data">Quarterly</button>
+                  <button class="px-3 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 flex-1 sm:flex-none" title="View yearly data">Yearly</button>
+                </div>
+              </div>
+              
+              <!-- Chart Container with Enhanced Design -->
+              <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
+                <div id="chart-container" class="h-64 sm:h-80 md:h-72">
+                  <canvas id="revenueChart" class="w-full h-full mx-auto"></canvas>
+                </div>
+                
+                <!-- Chart Legend with Modern Design -->
+                <div class="flex flex-wrap justify-center gap-3 sm:gap-4 mt-4">
+                  <div class="flex items-center">
+                    <span class="w-3 h-3 rounded-full bg-blue-500 mr-2"></span>
+                    <span class="text-xs text-gray-600 dark:text-gray-400">Revenue</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span>
+                    <span class="text-xs text-gray-600 dark:text-gray-400">Growth</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span class="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600 mr-2"></span>
+                    <span class="text-xs text-gray-600 dark:text-gray-400">Target</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Revenue Tab Content (hidden by default) -->
+          <div id="revenue-content" class="tab-content hidden">
+            <div class="mb-6">
+              <div class="flex items-center mb-4">
+                <span class="bg-indigo-100 dark:bg-indigo-900/30 p-1 rounded-lg mr-2">
+                  <i class='bx bx-dollar text-indigo-600 dark:text-indigo-400'></i>
+                </span>
+                <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">Financial Performance</h3>
+              </div>
+              
+              <!-- Revenue Cards with Modern Design -->
+              <div class="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+                <div class="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+                  <div class="flex justify-between items-start mb-2">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Average Order Value</p>
+                    <span class="bg-blue-100 dark:bg-blue-900/30 p-1 rounded text-blue-600 dark:text-blue-400">
+                      <i class='bx bx-purchase-tag-alt text-sm'></i>
+                    </span>
+                  </div>
+                  <p class="text-2xl font-bold text-gray-800 dark:text-white" id="avg-order-value">$0</p>
+                  <div class="mt-2 text-xs flex items-center text-green-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd" />
+                    </svg>
+                    <span id="aov-change">+5.2%</span> <span class="text-gray-500 dark:text-gray-400 ml-1">vs last month</span>
+                  </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+                  <div class="flex justify-between items-start mb-2">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Monthly Revenue</p>
+                    <span class="bg-green-100 dark:bg-green-900/30 p-1 rounded text-green-600 dark:text-green-400">
+                      <i class='bx bx-line-chart text-sm'></i>
+                    </span>
+                  </div>
+                  <p class="text-2xl font-bold text-gray-800 dark:text-white" id="monthly-revenue">$0</p>
+                  <div class="mt-2 text-xs flex items-center text-green-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd" />
+                    </svg>
+                    <span id="monthly-change">+8.1%</span> <span class="text-gray-500 dark:text-gray-400 ml-1">vs last month</span>
+                  </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+                  <div class="flex justify-between items-start mb-2">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Supplier Expenses</p>
+                    <span class="bg-red-100 dark:bg-red-900/30 p-1 rounded text-red-600 dark:text-red-400">
+                      <i class='bx bx-receipt text-sm'></i>
+                    </span>
+                  </div>
+                  <p class="text-2xl font-bold text-gray-800 dark:text-white" id="supplier-expenses">$0</p>
+                  <div class="mt-2 text-xs flex items-center text-red-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M12 13a1 1 0 100 2h5a1 1 0 001-1V9a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586 3.707 5.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L11 9.414 14.586 13H12z" clip-rule="evenodd" />
+                    </svg>
+                    <span id="expenses-change">+3.4%</span> <span class="text-gray-500 dark:text-gray-400 ml-1">vs last month</span>
+                  </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+                  <div class="flex justify-between items-start mb-2">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Profit Margin</p>
+                    <span class="bg-purple-100 dark:bg-purple-900/30 p-1 rounded text-purple-600 dark:text-purple-400">
+                      <i class='bx bx-trending-up text-sm'></i>
+                    </span>
+                  </div>
+                  <p class="text-2xl font-bold text-gray-800 dark:text-white" id="profit-margin">0%</p>
+                  <div class="mt-2 text-xs flex items-center text-green-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd" />
+                    </svg>
+                    <span id="margin-change">+1.2%</span> <span class="text-gray-500 dark:text-gray-400 ml-1">vs last month</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Revenue Breakdown Chart with Modern Design -->
+              <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 shadow-sm">
+                <div class="flex items-center mb-3">
+                  <span class="bg-indigo-100 dark:bg-indigo-900/30 p-1 rounded-lg mr-2">
+                    <i class='bx bx-pie-chart-alt-2 text-indigo-600 dark:text-indigo-400'></i>
+                  </span>
+                  <h4 class="text-md font-medium text-gray-800 dark:text-white">Revenue Breakdown by Category</h4>
+                </div>
+                <div class="h-64 sm:h-80">
+                  <canvas id="revenueBreakdownChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Orders Table with Modern Design -->
+      <div class="bg-white dark:bg-gray-800 p-3 sm:p-4 md:p-6 rounded-xl shadow-lg opacity-0 transition-opacity duration-500 border border-gray-100 dark:border-gray-700 relative overflow-hidden" data-aos="fade-up">
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-blue-500/5 rounded-full blur-2xl"></div>
+        <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-indigo-500/5 rounded-full blur-2xl"></div>
+        
+        <!-- Header with Search and Actions -->
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6 relative z-10">
+          <div class="flex items-center mb-3 sm:mb-0 w-full sm:w-auto">
+            <span class="bg-blue-100 dark:bg-blue-900/30 p-1.5 rounded-lg mr-2">
+              <i class='bx bx-shopping-bag text-blue-600 dark:text-blue-400'></i>
+            </span>
+            <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">Recent Orders</h3>
+          </div>
+          
+          <!-- Search and Filter -->
+          <div class="flex items-center space-x-2 w-full sm:w-auto">
+            <div class="relative flex-grow sm:flex-grow-0">
+              <input type="text" id="order-search" placeholder="Search orders..." class="w-full sm:w-44 pl-9 pr-4 py-2 text-sm bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent">
+              <i class='bx bx-search absolute left-3 top-2.5 text-gray-400'></i>
+            </div>
+            <button class="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Filter orders">
+              <i class='bx bx-filter text-gray-500 dark:text-gray-400'></i>
+            </button>
+            <button class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800/30 transition-colors" title="Refresh orders">
+              <i class='bx bx-refresh text-blue-600 dark:text-blue-400'></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Enhanced Table -->
+        <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 relative z-10">
+          <table class="min-w-full table-auto">
+            <thead>
+              <tr class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                <th class="px-2 sm:px-3 md:px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-300 text-xs uppercase tracking-wider">
+                  <div class="flex items-center">
+                    <i class='bx bx-hash text-gray-400 dark:text-gray-500 mr-1'></i>
+                    <span class="hidden xs:inline">Order</span> ID
+                  </div>
+                </th>
+                <th class="px-2 sm:px-3 md:px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-300 text-xs uppercase tracking-wider">
+                  <div class="flex items-center">
+                    <i class='bx bx-store text-gray-400 dark:text-gray-500 mr-1'></i>
+                    <span>Supplier</span>
+                  </div>
+                </th>
+                <th class="px-2 sm:px-3 md:px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-300 text-xs uppercase tracking-wider">
+                  <div class="flex items-center">
+                    <i class='bx bx-dollar text-gray-400 dark:text-gray-500 mr-1'></i>
+                    <span>Amount</span>
+                  </div>
+                </th>
+                <th class="hidden sm:table-cell px-2 sm:px-3 md:px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-300 text-xs uppercase tracking-wider">
+                  <div class="flex items-center">
+                    <i class='bx bx-calendar text-gray-400 dark:text-gray-500 mr-1'></i>
+                    <span>Date</span>
+                  </div>
+                </th>
+                <th class="px-2 sm:px-3 md:px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-300 text-xs uppercase tracking-wider">
+                  <div class="flex items-center">
+                    <i class='bx bx-check-circle text-gray-400 dark:text-gray-500 mr-1'></i>
+                    <span>Status</span>
+                  </div>
+                </th>
+                <th class="px-2 sm:px-3 md:px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-300 text-xs uppercase tracking-wider">
+                  <div class="flex items-center">
+                    <i class='bx bx-cog text-gray-400 dark:text-gray-500 mr-1'></i>
+                    <span class="hidden sm:inline">Actions</span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="recent-orders-body" class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+              <!-- Dynamic rows will be inserted here -->
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Table Footer with Pagination -->
+        <div class="mt-4 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+          <div class="mb-3 sm:mb-0">
+            Showing <span class="font-medium text-gray-700 dark:text-gray-300">1</span> to <span class="font-medium text-gray-700 dark:text-gray-300">3</span> of <span class="font-medium text-gray-700 dark:text-gray-300">3</span> orders
+          </div>
+          <div class="flex items-center space-x-1">
+            <button class="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed" disabled title="Previous page">
+              <i class='bx bx-chevron-left'></i>
+            </button>
+            <button class="px-3 py-1 rounded border border-blue-500 dark:border-blue-400 bg-blue-500 dark:bg-blue-400 text-white font-medium" title="Page 1">1</button>
+            <button class="px-2 py-1 rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed" disabled title="Next page">
+              <i class='bx bx-chevron-right'></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Set Username (simulated) -->
+    <!-- Set Username and Update Time (simulated) -->
     <script>
+      // Set username
       const username = 'Ayush'; // Replace with actual session/user fetch
-      document.getElementById('username').textContent = username;
+      const usernameElement = document.getElementById('username');
+      if (usernameElement) {
+        usernameElement.textContent = username;
+        // Add a class to trigger the animation
+        usernameElement.classList.add('animate-pulse');
+      }
+      
+      // Update date and time
+      function updateDateTime() {
+        const now = new Date();
+        const options = { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        };
+        document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', options);
+        document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+      }
+      
+      // Update immediately and then every minute
+      updateDateTime();
+      setInterval(updateDateTime, 60000);
+      
+      // Update welcome message based on time of day
+      function updateWelcomeMessage() {
+        const hour = new Date().getHours();
+        let message = '';
+        
+        if (hour < 12) {
+          message = 'Good morning! Start your day with these insights';
+        } else if (hour < 17) {
+          message = 'Good afternoon! Here\'s your current system status';
+        } else {
+          message = 'Good evening! Here\'s your end-of-day summary';
+        }
+        
+        document.getElementById('welcome-message').textContent = message;
+      }
+      
+      updateWelcomeMessage();
     </script>
 
     <!-- JS for Dynamic Dashboard -->
     <script>
+      // Initialize dashboard functionality
+      document.addEventListener('DOMContentLoaded', () => {
+        
+        // Initialize AOS animations
+        if (typeof AOS !== 'undefined') {
+          AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100,
+            disable: window.innerWidth < 640 ? true : false // Disable on small screens for performance
+          });
+        }
+        
+        setTimeout(() => {
+          // Hide loading and show content
+          document.getElementById('loading-container').classList.add('hidden');
+          const dashboardContent = document.getElementById('dashboard-content');
+          dashboardContent.classList.remove('hidden');
+          dashboardContent.classList.add('block');
+          
+          // Start fetching data after showing the UI
+          fetchDashboardData();
+          fetchRecentOrders();
+          setTimeout(renderRevenueChart, 300); // Slight delay for better animation flow
+          
+          // Activate animations
+          setTimeout(() => {
+            document.querySelectorAll('.fade-in, .scale-in').forEach(el => {
+              el.classList.add('active');
+            });
+          }, 100);
+        }, 1500); // Simulating loading time
+      });
+
+      // Handle responsive charts on window resize
+      window.addEventListener('resize', function() {
+        // Throttle the resize event to prevent performance issues
+        if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
+        this.resizeTimeout = setTimeout(function() {
+          let chart = Chart.getChart("revenueChart");
+          if (chart) {
+            chart.resize();
+          }
+        }, 200);
+      });
+
+      // Animate numbers with CountUp.js
+      function animateValue(id, start, end, prefix = '') {
+        if (typeof CountUp !== 'undefined') {
+          const options = {
+            startVal: start,
+            prefix: prefix,
+            decimalPlaces: id === 'revenue' ? 2 : 0 // Use 2 decimal places for revenue
+          };
+          const countUp = new CountUp(id, end, options);
+          if (!countUp.error) {
+            countUp.start();
+          } else {
+            console.warn('CountUp error:', countUp.error);
+            // Fallback if animation fails
+            if (id === 'revenue') {
+              document.getElementById(id).textContent = prefix + end.toFixed(2);
+            } else {
+              document.getElementById(id).textContent = prefix + end;
+            }
+          }
+        } else {
+          // Fallback if CountUp is not available
+          if (id === 'revenue') {
+            document.getElementById(id).textContent = prefix + end.toFixed(2);
+          } else {
+            document.getElementById(id).textContent = prefix + end;
+          }
+        }
+      }
+
       // Fetch dashboard stats
       async function fetchDashboardData() {
         try {
+          // Check if the backend file exists
+          console.log('Attempting to fetch dashboard stats...');
           const response = await fetch('../backend/dashboard_stats.php');
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          
           const data = await response.json();
-
-          document.querySelector('.total-suppliers').textContent = data.totalSuppliers;
-          document.querySelector('.pending-orders').textContent = data.pendingOrders;
-          document.querySelector('.completed-orders').textContent = data.completedOrders;
-          document.querySelector('.total-revenue').textContent = `$${parseFloat(data.totalRevenue).toLocaleString()}`;
+          console.log('Dashboard data received:', data); // Debug log
+          
+          // Ensure values are valid numbers with defaults
+          const suppliers = parseInt(data.totalSuppliers) || 0;
+          const orders = parseInt(data.totalOrders) || 0;
+          const pending = parseInt(data.pendingOrders) || 0;
+          const revenue = parseFloat(data.totalRevenue) || 0;
+          
+          // Format the revenue value with 2 decimal places
+          const formattedRevenue = '$' + revenue.toFixed(2);
+          
+          // Animate values
+          animateValue('supplier-count', 0, suppliers);
+          animateValue('order-count', 0, orders);
+          animateValue('pending-count', 0, pending);
+          animateValue('revenue', 0, revenue, '$');
+          
+          // Set direct value as backup
+          document.getElementById('revenue').textContent = formattedRevenue;
+          
         } catch (error) {
           console.error('Error fetching dashboard data:', error);
+          // Set fallback values if there's an error
+          document.getElementById('supplier-count').textContent = '0';
+          document.getElementById('order-count').textContent = '0';
+          document.getElementById('pending-count').textContent = '0';
+          document.getElementById('revenue').textContent = '$0.00';
+          
+          // Use sample data for development/testing
+          console.log('Using sample data for dashboard');
+          animateValue('supplier-count', 0, 12);
+          animateValue('order-count', 0, 45);
+          animateValue('pending-count', 0, 8);
+          animateValue('revenue', 0, 24500.75, '$');
         }
       }
 
       // Fetch recent orders
       async function fetchRecentOrders() {
         try {
+          console.log('Attempting to fetch recent orders...');
           const response = await fetch('../backend/get_recent_orders.php');
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          
           const orders = await response.json();
+          console.log('Recent orders received:', orders);
+          
+          // Store orders in a global variable for search functionality
+          window.allOrders = Array.isArray(orders) && orders.length > 0 ? orders : [];
+          
+          displayOrders(window.allOrders);
+        } catch (error) {
+          console.error('Error fetching recent orders:', error);
+          
+          // Show error message in table
           const tbody = document.getElementById('recent-orders-body');
-          tbody.innerHTML = '';
-
-          orders.forEach(order => {
+          tbody.innerHTML = `<tr><td colspan="6" class="px-2 sm:px-3 md:px-4 py-4 text-center text-gray-500">Could not load recent orders. Using sample data.</td></tr>`;
+          
+          // Use sample data for development/testing
+          console.log('Using sample data for recent orders');
+          const sampleOrders = [
+            { order_id: '1001', supplier_name: 'Tech Solutions Inc.', amount: '1,250.00', order_date: '2025-04-15', status: 'Completed' },
+            { order_id: '1002', supplier_name: 'Office Supplies Co.', amount: '450.75', order_date: '2025-04-18', status: 'Pending' },
+            { order_id: '1003', supplier_name: 'Global Imports Ltd.', amount: '2,780.50', order_date: '2025-04-20', status: 'Pending' }
+          ];
+          
+          // Store sample orders in a global variable for search functionality
+          window.allOrders = sampleOrders;
+          
+          setTimeout(() => {
+            displayOrders(window.allOrders);
+          }, 500);
+        }
+      }
+      
+      // Function to display orders
+      function displayOrders(orders) {
+        const tbody = document.getElementById('recent-orders-body');
+        tbody.innerHTML = '';
+        
+        if (orders.length > 0) {
+          orders.forEach((order, index) => {
             const row = document.createElement('tr');
-            row.classList.add('border-b', 'dark:border-gray-700');
+            row.classList.add('border-b', 'dark:border-gray-700', 'table-row-animated');
+            row.style.animationDelay = `${index * 0.1}s`;
+            
+            // For mobile responsive tables, add data-label attributes
             row.innerHTML = `
-              <td class="px-4 py-2">ORD${order.order_id}</td>
-              <td class="px-4 py-2">${order.supplier_name}</td>
-              <td class="px-4 py-2">$${order.amount}</td>
-              <td class="px-4 py-2 ${order.status === 'Completed' ? 'text-green-500' : 'text-yellow-500'}">${order.status}</td>
+              <td class="px-2 sm:px-3 md:px-4 py-3" data-label="Order ID">
+                <div class="flex items-center">
+                  <span class="font-medium text-gray-700 dark:text-gray-300">ORD${order.order_id}</span>
+                </div>
+              </td>
+              <td class="px-2 sm:px-3 md:px-4 py-3" data-label="Supplier">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-8 w-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mr-2">
+                    <span class="text-blue-600 dark:text-blue-400 text-xs font-bold">${order.supplier_name.charAt(0)}${order.supplier_name.split(' ')[1] ? order.supplier_name.split(' ')[1].charAt(0) : ''}</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300">${order.supplier_name}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-2 sm:px-3 md:px-4 py-3" data-label="Amount">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">$${order.amount}</span>
+              </td>
+              <td class="hidden sm:table-cell px-2 sm:px-3 md:px-4 py-3" data-label="Date">
+                <span class="text-sm text-gray-500 dark:text-gray-400">${order.order_date || 'N/A'}</span>
+              </td>
+              <td class="px-2 sm:px-3 md:px-4 py-3" data-label="Status">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${order.status === 'Completed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}">
+                  <span class="w-1.5 h-1.5 rounded-full ${order.status === 'Completed' ? 'bg-green-500' : order.status === 'Pending' ? 'bg-yellow-500' : 'bg-red-500'} mr-1.5"></span>
+                  ${order.status}
+                </span>
+              </td>
+              <td class="px-2 sm:px-3 md:px-4 py-3" data-label="Actions">
+                <div class="flex items-center space-x-2">
+                  <a href="orders.html" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 p-1 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title="View order details">
+                    <i class='bx bx-show'></i>
+                  </a>
+                  <button class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 p-1 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" title="Edit order">
+                    <i class='bx bx-edit'></i>
+                  </button>
+                </div>
+              </td>
             `;
             tbody.appendChild(row);
           });
-        } catch (error) {
-          console.error('Error fetching recent orders:', error);
+        } else {
+          // No orders or invalid response
+          const row = document.createElement('tr');
+          row.innerHTML = `<td colspan="6" class="px-2 sm:px-3 md:px-4 py-4 text-center text-gray-500">No orders found</td>`;
+          tbody.appendChild(row);
         }
       }
-
-      // Render chart
+      
+      // Initialize search functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('order-search');
+        if (searchInput) {
+          searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            
+            if (!window.allOrders) {
+              console.error('Orders data not available for search');
+              return;
+            }
+            
+            if (searchTerm === '') {
+              // If search is empty, show all orders
+              displayOrders(window.allOrders);
+              return;
+            }
+            
+            // Filter orders based on search term
+            const filteredOrders = window.allOrders.filter(order => {
+              return (
+                ('ORD' + order.order_id).toLowerCase().includes(searchTerm) ||
+                order.supplier_name.toLowerCase().includes(searchTerm) ||
+                ('$' + order.amount).toLowerCase().includes(searchTerm) ||
+                (order.order_date || '').toLowerCase().includes(searchTerm) ||
+                order.status.toLowerCase().includes(searchTerm)
+              );
+            });
+            
+            // Display filtered orders
+            displayOrders(filteredOrders);
+          });
+        }
+      });
+      
+      // Render chart with animation
       async function renderRevenueChart() {
         try {
+          console.log('Attempting to fetch revenue chart data...');
           const response = await fetch('../backend/revenue_chart_data.php');
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          
           const chartData = await response.json();
+          console.log('Chart data received:', chartData);
 
           const ctx = document.getElementById('revenueChart').getContext('2d');
           new Chart(ctx, {
@@ -153,40 +970,325 @@
             },
             options: {
               responsive: true,
+              maintainAspectRatio: false,
               plugins: {
                 legend: {
                   labels: {
-                    color: document.documentElement.classList.contains('dark') ? 'white' : 'black'
+                    color: document.documentElement.classList.contains('dark') ? 'white' : 'black',
+                    font: {
+                      size: window.innerWidth < 640 ? 10 : 12
+                    }
+                  }
+                },
+                tooltip: {
+                  bodyFont: {
+                    size: window.innerWidth < 640 ? 10 : 14
+                  },
+                  titleFont: {
+                    size: window.innerWidth < 640 ? 12 : 16
                   }
                 }
               },
               scales: {
                 x: {
                   ticks: {
-                    color: document.documentElement.classList.contains('dark') ? 'white' : 'black'
+                    color: document.documentElement.classList.contains('dark') ? 'white' : 'black',
+                    font: {
+                      size: window.innerWidth < 640 ? 8 : 12
+                    },
+                    maxRotation: 45,
+                    minRotation: 45
                   }
                 },
                 y: {
                   ticks: {
-                    color: document.documentElement.classList.contains('dark') ? 'white' : 'black'
+                    color: document.documentElement.classList.contains('dark') ? 'white' : 'black',
+                    font: {
+                      size: window.innerWidth < 640 ? 8 : 12
+                    }
                   }
                 }
+              },
+              animation: {
+                duration: 2000,
+                easing: 'easeOutQuart'
               }
             }
           });
         } catch (error) {
-          console.error('Error loading revenue chart:', error);
+          console.error('Error rendering revenue chart:', error);
+          
+          // Use sample data for the chart if the backend fails
+          console.log('Using sample data for revenue chart');
+          const sampleChartData = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            data: [4500, 5200, 4800, 6500, 5800, 7200]
+          };
+          
+          const ctx = document.getElementById('revenueChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: sampleChartData.labels,
+              datasets: [{
+                label: 'Revenue ($)',
+                data: sampleChartData.data,
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  labels: {
+                    color: document.documentElement.classList.contains('dark') ? 'white' : 'black',
+                    font: {
+                      size: window.innerWidth < 640 ? 10 : 12
+                    }
+                  }
+                },
+                tooltip: {
+                  bodyFont: {
+                    size: window.innerWidth < 640 ? 10 : 14
+                  },
+                  titleFont: {
+                    size: window.innerWidth < 640 ? 12 : 16
+                  }
+                }
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    color: document.documentElement.classList.contains('dark') ? 'white' : 'black',
+                    font: {
+                      size: window.innerWidth < 640 ? 8 : 12
+                    },
+                    maxRotation: 45,
+                    minRotation: 45
+                  }
+                },
+                y: {
+                  ticks: {
+                    color: document.documentElement.classList.contains('dark') ? 'white' : 'black',
+                    font: {
+                      size: window.innerWidth < 640 ? 8 : 12
+                    }
+                  }
+                }
+              },
+              animation: {
+                duration: 2000,
+                easing: 'easeOutQuart'
+              }
+            }
+          });
         }
       }
 
-      // Initialize dashboard
-      document.addEventListener('DOMContentLoaded', () => {
-        fetchDashboardData();
-        fetchRecentOrders();
-        renderRevenueChart();
+      // Dark mode toggle functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const html = document.documentElement;
+        
+        if (darkModeToggle) {
+          darkModeToggle.addEventListener('click', function() {
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+          });
+        }
+        
+        // Check saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+          html.classList.remove('dark');
+        } else if (savedTheme === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          html.classList.add('dark');
+        }
+      });
+
+      // Tab switching functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const overviewTab = document.getElementById('overview-tab');
+        const revenueTab = document.getElementById('revenue-tab');
+        const overviewContent = document.getElementById('overview-content');
+        const revenueContent = document.getElementById('revenue-content');
+        
+        function switchTab(activeTab, activeContent, inactiveTab, inactiveContent) {
+          // Update tab button styles
+          activeTab.classList.remove('text-gray-500', 'dark:text-gray-400', 'border-transparent');
+          activeTab.classList.add('text-blue-600', 'dark:text-blue-400', 'border-blue-600', 'dark:border-blue-400');
+          
+          inactiveTab.classList.remove('text-blue-600', 'dark:text-blue-400', 'border-blue-600', 'dark:border-blue-400');
+          inactiveTab.classList.add('text-gray-500', 'dark:text-gray-400', 'border-transparent');
+          
+          // Show/hide content
+          activeContent.classList.remove('hidden');
+          inactiveContent.classList.add('hidden');
+        }
+        
+        overviewTab.addEventListener('click', () => {
+          switchTab(overviewTab, overviewContent, revenueTab, revenueContent);
+        });
+        
+        revenueTab.addEventListener('click', () => {
+          switchTab(revenueTab, revenueContent, overviewTab, overviewContent);
+          // Initialize revenue breakdown chart if it doesn't exist yet
+          if (window.revenueBreakdownChart === undefined) {
+            initRevenueBreakdownChart();
+          }
+        });
+      });
+      
+      // Initialize revenue breakdown chart
+      function initRevenueBreakdownChart() {
+        const ctx = document.getElementById('revenueBreakdownChart').getContext('2d');
+        window.revenueBreakdownChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Raw Materials', 'Manufacturing', 'Logistics', 'Services', 'Other'],
+            datasets: [{
+              data: [35, 25, 20, 15, 5],
+              backgroundColor: [
+                'rgba(59, 130, 246, 0.8)',
+                'rgba(16, 185, 129, 0.8)',
+                'rgba(239, 68, 68, 0.8)',
+                'rgba(245, 158, 11, 0.8)',
+                'rgba(139, 92, 246, 0.8)'
+              ],
+              borderColor: [
+                'rgba(59, 130, 246, 1)',
+                'rgba(16, 185, 129, 1)',
+                'rgba(239, 68, 68, 1)',
+                'rgba(245, 158, 11, 1)',
+                'rgba(139, 92, 246, 1)'
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'right',
+                labels: {
+                  color: document.documentElement.classList.contains('dark') ? 'white' : 'black',
+                  font: {
+                    size: window.innerWidth < 640 ? 10 : 12
+                  }
+                }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return `${context.label}: ${context.raw}%`;
+                  }
+                }
+              }
+            },
+            cutout: '60%'
+          }
+        });
+        
+        // Simulate loading financial data
+        setTimeout(() => {
+          document.getElementById('avg-order-value').textContent = '$1,250';
+          document.getElementById('monthly-revenue').textContent = '$48,750';
+          document.getElementById('supplier-expenses').textContent = '$29,450';
+          document.getElementById('profit-margin').textContent = '39.6%';
+        }, 300);
+      }
+      
+      // Update chart colors when theme changes
+      function updateChartTheme() {
+        const isDark = document.documentElement.classList.contains('dark');
+        const textColor = isDark ? 'white' : 'black';
+        
+        if (window.revenueBreakdownChart) {
+          window.revenueBreakdownChart.options.plugins.legend.labels.color = textColor;
+          window.revenueBreakdownChart.update();
+        }
+        
+        const revenueChart = Chart.getChart("revenueChart");
+        if (revenueChart) {
+          revenueChart.options.scales.x.ticks.color = textColor;
+          revenueChart.options.scales.y.ticks.color = textColor;
+          revenueChart.options.plugins.legend.labels.color = textColor;
+          revenueChart.update();
+        }
+      }
+      
+      // Update charts when dark mode is toggled
+      document.addEventListener('DOMContentLoaded', function() {
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        if (darkModeToggle) {
+          darkModeToggle.addEventListener('click', function() {
+            // Wait for the DOM to update with the new theme
+            setTimeout(updateChartTheme, 100);
+          });
+        }
       });
     </script>
 
+    <!-- AOS Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   </main>
+  
+  <!-- Mobile Menu Script -->
+  <script src="js/mobile-menu.js"></script>
+  <!-- Dark Mode Script -->
+  <script src="js/dark-mode.js"></script>
+  
+  <script>
+    // Function to modify table for mobile view
+    function adjustTableForMobile() {
+      const isMobile = window.innerWidth < 640;
+      const tableRows = document.querySelectorAll('#recent-orders-body tr');
+      
+      tableRows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length > 0) {
+          // Add data-label attributes for mobile view
+          cells.forEach((cell, index) => {
+            const headerText = document.querySelector(`table th:nth-child(${index + 1})`).textContent.trim();
+            cell.setAttribute('data-label', headerText);
+          });
+          
+          // Add responsive classes
+          if (isMobile) {
+            row.classList.add('mobile-row');
+          } else {
+            row.classList.remove('mobile-row');
+          }
+        }
+      });
+    }
+    
+    // Call on load and resize
+    window.addEventListener('DOMContentLoaded', adjustTableForMobile);
+    window.addEventListener('resize', adjustTableForMobile);
+  </script>
+  
+  <script>
+    // Initialize mobile dark mode toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileDarkModeToggle = document.getElementById('mobile-dark-mode-toggle');
+      if (mobileDarkModeToggle) {
+        mobileDarkModeToggle.addEventListener('click', function() {
+          document.documentElement.classList.toggle('dark');
+          localStorage.setItem('darkMode', document.documentElement.classList.contains('dark') ? 'enabled' : 'disabled');
+          
+          // Update chart colors if they exist
+          setTimeout(updateChartTheme, 100);
+        });
+      }
+    });
+  </script>
 </body>
 </html>
